@@ -1,0 +1,23 @@
+{
+  "name": "alumni-portal-nu",
+  "version": "1.0.0",
+  "description": "NU Alumni Portal Capstone Project 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Voodoo-exe/alumni-portal-nu.git"
+  },
+  "author": "Team 3 - M.Abhishek, Avi Sinha, Jaswant Kondur, Ayush Jha, Aditya Choudhari",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Voodoo-exe/alumni-portal-nu/issues"
+  },
+  "homepage": "https://github.com/Voodoo-exe/alumni-portal-nu#readme",
+  "dependencies": {
+    "concurrently": "^7.4.0"
+  }
+}
