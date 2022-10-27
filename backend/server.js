@@ -1,36 +1,25 @@
-const express = require("express")
-const getAlumniAccounts = require("./db/db_operation")
-const cors = require("cors")
+const app = require("./app")
+
+// Handling uncaught exception
+process
+  .on("unhandledRejection", (reason, p) => {
+    console.error(reason, "Unhandled Rejection at Promise", p)
+  })
+  .on("uncaughtException", (err) => {
+    console.error(err, "Uncaught Exception thrown")
+    process.exit(1)
+  })
 
 const PORT = process.env.PORT
-const app = express()
-
-app.use(cors())
-
-app.get("/", async (req, res) => {
-  let details = await getAlumniAccounts()
-  try {
-    console.log("Details: ", details)
-    res.send(details)
-  } catch (err) {
-    res.send(err)
-  }
+const server = app.listen(PORT, () => {
+  console.log(`Server is working on http://localhost:${PORT}`)
 })
 
-app.get("/api", (req, res) => {
-  console.log("called")
-  res.send({
-    result: "go away",
+// Unhandled Promise Rejection
+process.on("unhandledRejection", (err) => {
+  console.log(`Error: ${err.message}`)
+  console.log("Shutting down the server due to unhandled promise rejection")
+  server.close(() => {
+    process.exit(1)
   })
-})
-
-app.get("/hello", (req, res) => {
-  console.log("Hello")
-  res.send({
-    result: "HI!",
-  })
-})
-
-app.listen(PORT, () => {
-  console.log(`Listening on port: ${PORT}`)
 })
