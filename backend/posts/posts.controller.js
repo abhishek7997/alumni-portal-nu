@@ -2,9 +2,9 @@ const {
   createEventPost,
   getAllEventPosts,
   getEventPostsByUserId,
-  createAlumniPost,
-  getAlumniPostsByUserId,
-  getAllAlumniPosts,
+  createGeneralPost,
+  getGeneralPostsByUserId,
+  getAllGeneralPosts,
   addPostComment,
   getAllPostComments,
   getPostCommentsOfPostById,
@@ -20,10 +20,10 @@ router.route("/posts/event_posts").get(getAllEventPosts)
 router.route("/posts/event_posts/:user_id").get(getEventPostsByUserId)
 
 router
-  .route("/posts/alumni_posts/create")
-  .post(isAuthenticatedUser, createAlumniPost)
-router.route("/posts/alumni_posts").get(getAllAlumniPosts)
-router.route("/posts/alumni_posts/:user_id").get(getAlumniPostsByUserId)
+  .route("/posts/general_posts/create")
+  .post(isAuthenticatedUser, createGeneralPost)
+router.route("/posts/general_posts").get(getAllGeneralPosts)
+router.route("/posts/general_posts/:user_id").get(getGeneralPostsByUserId)
 
 router
   .route("/posts/post_comments/create")
