@@ -15,14 +15,16 @@ exports.isAuthenticatedUser = async (req, res, next) => {
   }
 
   const decodedData = jwt.verify(accessToken, process.env.JWT_SECRET)
+  // console.log("decoded data : ", decodedData)
 
   let pool = await sql.connect(config)
   const user = await pool
     .request()
     .query(
-      `SELECT user_id, user_name FROM users WHERE user_id = '${decodedData.user_id}'`
+      `SELECT usr_id, user_name FROM users WHERE usr_id = '${decodedData.user_id}'`
     )
 
+  // console.log("user: ", user.recordset[0])
   req.user = user.recordset[0]
   next()
 }
