@@ -1,41 +1,40 @@
-@import '~mdb-ui-kit/css/mdb.min.css';
+@import "~mdb-ui-kit/css/mdb.min.css";
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  
+
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-.backimg{
+
+.backimg {
   background-image: url(/src/img/alumni.jpg);
   background-size: cover;
   background-repeat: no-repeat;
 }
-.text{
+
+.text {
   text-align: center;
-  background-color:#831619;
+  background-color: #831619;
   color: #fff;
-  font-size:medium;
-  
-  
-  
+  font-size: medium;
 }
-.top{
-  
-  max-width:100%;
-  
+
+.top {
+  max-width: 100%;
+
   background-color: powderblue;
   background-image: 'url("./img/bankai.jpg")';
-  
-  
 }
+
 .carousel-root {
   width: 64% !important;
   margin: auto !important;
@@ -145,6 +144,7 @@ code {
   .carousel.carousel-slider .control-arrow {
     display: none !important;
   }
+
   .myCarousel {
     background: #fafafa;
     margin-top: -9%;

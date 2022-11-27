@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react"
 import {
   Nav,
   NavLink,
@@ -7,37 +6,37 @@ import {
   NavMenu,
   NavBtn,
   NavBtnLink,
-} from './NavbarElements.js';
-import { Link } from "react-router-dom";
+} from "./NavbarElements.js"
+import { Link } from "react-router-dom"
 const Navbar = () => {
   return (
     <>
       <Nav>
         <Bars />
-  
-        <NavMenu className='menu'>
-          <Link to='/connect' activeStyle>
+
+        <NavMenu className="menu">
+          <Link to="/connect" activeStyle>
             Connect
           </Link>
-          <Link to='/profile' activeStyle>
+          <Link to="/profile" activeStyle>
             Profile
           </Link>
-          <Link to='/register' activeStyle>
+          <Link to="/register" activeStyle>
             Register
           </Link>
-          <Link to='/' activeStyle>
+          <Link to="/" activeStyle>
             Home
           </Link>
-          
+
           {/* Second Nav */}
           {/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
         </NavMenu>
         <NavBtn>
-          <NavBtnLink to=''>Sign In</NavBtnLink>
+          <NavBtnLink to="">Sign In</NavBtnLink>
         </NavBtn>
       </Nav>
     </>
-  );
-};
-  
-export default Navbar;
+  )
+}
+
+export default Navbar

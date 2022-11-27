@@ -1,68 +1,64 @@
 .main {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-    align-items: center;
-    flex-direction: column;
-    row-gap: 20px;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 20px;
 }
 
 h1 {
-    margin: 10px;
-    font-size: 40px;
-    color: rgb(1, 1, 59);
+  margin: 10px;
+  font-size: 40px;
+  color: rgb(1, 1, 59);
 }
 
 .search {
-    width: 30%;
+  width: 30%;
 }
 
 ul li {
-    font-size: 20px;
-} 
-.MainCard{
-    border: 2px solid#813619;
-    
-    align-content: center;
-    
-    
-    align-items: start;
-    justify-content: space-between;
-    display: flex;
-    float: left;
-    
-    
-    
+  font-size: 20px;
 }
 
+.MainCard {
+  border: 2px solid#813619;
 
-.CardImage{
-    align-content: center;
-    border-radius: 50%;
-    height:200px;
-    border-color: #813619;
-    border: 3px solid#813619;
-    display: inline-block;
-    flex: 1;
+  align-content: center;
 
+  align-items: start;
+  justify-content: space-between;
+  display: flex;
+  float: left;
 }
-.Yo{
-    
-    margin-top: 40px;
-    margin-right: 10px;
-    margin-left: 50px;
-    align-items: center;
-    justify-content: center;
+
+.CardImage {
+  align-content: center;
+  border-radius: 50%;
+  height: 200px;
+  border-color: #813619;
+  border: 3px solid#813619;
+  display: inline-block;
+  flex: 1;
 }
-.Text{
-    
-    text-align: center;
+
+.Yo {
+  margin-top: 40px;
+  margin-right: 10px;
+  margin-left: 50px;
+  align-items: center;
+  justify-content: center;
 }
-.Card-Button{
-    margin-right: 20px;
-    background-color: #813619;
-    margin-left: 13%;
-    color: white;
-    border-radius: 10%;
-    padding: 15px 32px;
+
+.Text {
+  text-align: center;
+}
+
+.Card-Button {
+  margin-right: 20px;
+  background-color: #813619;
+  margin-left: 13%;
+  color: white;
+  border-radius: 10%;
+  padding: 15px 32px;
 }

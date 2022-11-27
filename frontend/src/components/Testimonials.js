@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
-import avi from "../img/r1.jpeg";
-import shalom from "../img/r2.jpeg";
-import jaswant from "../img/r3.jpeg";
+import React, { Component } from "react"
+import "react-responsive-carousel/lib/styles/carousel.min.css"
+import { Carousel } from "react-responsive-carousel"
+import avi from "../img/r1.jpeg"
+import shalom from "../img/r2.jpeg"
+import jaswant from "../img/r3.jpeg"
 export default class Testimonials extends Component {
   render() {
     return (
@@ -51,6 +51,6 @@ export default class Testimonials extends Component {
           </div>
         </div>
       </Carousel>
-    );
+    )
   }
 }
