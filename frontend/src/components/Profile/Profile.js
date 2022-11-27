@@ -1,5 +1,5 @@
-import React from "react";
-import './Profile.scss';
+import React from "react"
+import "./Profile.scss"
 
 import {
   MDBCol,
@@ -16,8 +16,7 @@ import {
   MDBListGroup,
   MDBListGroupItem,
 } from "mdb-react-ui-kit"
-import { ButtonUnstyled } from "@mui/base";
-
+import { ButtonUnstyled } from "@mui/base"
 
 export default function Profile() {
   return (
