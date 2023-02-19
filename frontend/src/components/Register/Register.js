@@ -20,7 +20,7 @@ import { registerUser } from "../../features/user/userActions"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { getLoggedInUserDetails } from "../../features/profile/profileActions"
-import "./Register.css"
+import s from "./Register.module.css"
 
 const styles = (theme) => ({
   field: {
@@ -143,7 +143,7 @@ function Register() {
 
   return (
     <Container maxWidth="lg">
-      <div id="centerDiv">
+      <div className={s.center_div}>
         <Paper
           elevation={3}
           sx={{
@@ -153,56 +153,57 @@ function Register() {
             paddingBottom: "1.2rem",
           }}
         >
-          <Typography component="div" className="title-text" variant="h3">
+          <Typography component="div" variant="h3">
             Register
           </Typography>
-        </Paper>
-        <form
-          id="survey-form"
-          className={classes.root}
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Stack direction="column" alignItems="flex-start" spacing={2}>
-            <div>
+
+          <form
+            className={s.survey_form}
+            autoComplete="off"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Stack
+              direction="column"
+              alignItems="flex-start"
+              spacing={2}
+              style={{ width: "100%" }}
+            >
               <TextField
                 label="First Name"
                 variant="outlined"
                 {...register("first_name")}
                 error={errors.first_name ? true : false}
+                className={s.text_field}
               />
               <Typography variant="inherit" color="textSecondary">
                 {errors.first_name?.message}
               </Typography>
-            </div>
-            <div>
               <TextField
                 label="Last Name"
                 variant="outlined"
                 {...register("last_name")}
                 error={errors.last_name ? true : false}
+                className={s.text_field}
               />
               <Typography variant="inherit" color="textSecondary">
                 {errors.last_name?.message}
               </Typography>
-            </div>
-            <div>
               <TextField
                 label="email_address"
                 variant="outlined"
                 {...register("email_address")}
                 error={errors.email_address ? true : false}
+                className={s.text_field}
               />
               <Typography variant="inherit" color="textSecondary">
                 {errors.email_address?.message}
               </Typography>
-            </div>
-            <div>
               <Controller
                 name="mobile_number"
                 control={control}
                 render={({ field }) => (
                   <ReactPhoneInput
+                    className={s.text_field}
                     country="IN"
                     value={mobile_number}
                     onChange={handlePhoneChange}
@@ -211,10 +212,9 @@ function Register() {
                   />
                 )}
               />
-            </div>
-            <br></br>
-            <div id="password">
+              <br></br>
               <TextField
+                className={s.text_field}
                 label="Password"
                 type={passwordState.showPassword ? "text" : "password"}
                 variant="outlined"
@@ -242,9 +242,8 @@ function Register() {
               <Typography variant="inherit" color="textSecondary">
                 {errors.password?.message}
               </Typography>
-            </div>
-            <div id="password">
               <TextField
+                className={s.text_field}
                 label="Confirm Password"
                 type={passwordState.showPassword ? "text" : "password"}
                 variant="outlined"
@@ -272,69 +271,75 @@ function Register() {
               <Typography variant="inherit" color="textSecondary">
                 {errors.confirmPassword?.message}
               </Typography>
-            </div>
-            <TextField
-              label="User Bio"
-              multiline
-              minRows={4}
-              defaultValue=""
-              variant="outlined"
-              fullWidth
-              {...register("user_bio")}
-              error={errors.user_bio ? true : false}
-            />
-            <TextField
-              label="Batch"
-              variant="outlined"
-              type="number"
-              {...register("batch")}
-              error={errors.batch ? true : false}
-            />
-            <TextField
-              label="user_company"
-              variant="outlined"
-              {...register("user_company")}
-              error={errors.user_company ? true : false}
-            />
-            <TextField
-              label="user_location"
-              variant="outlined"
-              {...register("user_location")}
-              error={errors.user_location ? true : false}
-            />
-            <TextField
-              label="Job Role"
-              variant="outlined"
-              {...register("user_job")}
-              error={errors.user_job ? true : false}
-            />
-            <Button variant="contained" component="label">
-              Resume Upload
-              <input hidden accept="image/*" multiple type="file" />
-            </Button>
-            Profile Picture:
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-            >
-              <input hidden accept="image/*" type="file" />
-              <PhotoCamera />
-            </IconButton>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              onClick={() => {
-                console.log(errors)
-              }}
-            >
-              Register
-            </Button>
-            <Typography>{errors?.content}</Typography>
-            <Typography>{error && `${error}`}</Typography>
-          </Stack>
-        </form>
+              <TextField
+                className={s.text_field}
+                label="User Bio"
+                multiline
+                minRows={4}
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                {...register("user_bio")}
+                error={errors.user_bio ? true : false}
+              />
+              <TextField
+                label="Batch"
+                variant="outlined"
+                type="number"
+                {...register("batch")}
+                className={s.text_field}
+                error={errors.batch ? true : false}
+              />
+              <TextField
+                label="user_company"
+                variant="outlined"
+                {...register("user_company")}
+                className={s.text_field}
+                error={errors.user_company ? true : false}
+              />
+              <TextField
+                label="user_location"
+                variant="outlined"
+                {...register("user_location")}
+                className={s.text_field}
+                error={errors.user_location ? true : false}
+              />
+              <TextField
+                label="Job Role"
+                variant="outlined"
+                {...register("user_job")}
+                className={s.text_field}
+                error={errors.user_job ? true : false}
+              />
+              <Button variant="contained" component="label">
+                Resume Upload
+                <input hidden accept="image/*" multiple type="file" />
+              </Button>
+              Profile Picture:
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
+                <input hidden accept="image/*" type="file" />
+                <PhotoCamera />
+              </IconButton>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={() => {
+                  console.log(errors)
+                }}
+                className={s.register_button}
+              >
+                Register
+              </Button>
+              <Typography>{errors?.content}</Typography>
+              <Typography>{error && `${error}`}</Typography>
+            </Stack>
+          </form>
+        </Paper>
       </div>
     </Container>
   )

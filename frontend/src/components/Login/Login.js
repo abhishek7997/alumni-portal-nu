@@ -18,7 +18,7 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material"
-import "./Login.css"
+import s from "./Login.module.css"
 
 const styles = (theme) => ({
   field: {
@@ -96,8 +96,8 @@ function Register() {
   }
 
   return (
-    <Container maxWidth="lg">
-      <div id="centerDiv">
+    <Container maxWidth="lg" style={{ height: "90vh" }}>
+      <div className={s.center_div}>
         <Paper
           elevation={3}
           sx={{
@@ -107,35 +107,38 @@ function Register() {
             paddingBottom: "1.2rem",
           }}
         >
-          <Typography component="div" className="title-text" variant="h3">
+          <Typography component="div" variant="h3">
             Login
           </Typography>
-        </Paper>
-        <form
-          id="survey-form"
-          className={classes.root}
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Stack direction="column" alignItems="flex-start" spacing={2}>
-            <div>
+          <form
+            className={s.survey_form}
+            // className={classes.root}
+            autoComplete="off"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Stack
+              direction="column"
+              alignItems="flex-start"
+              spacing={2}
+              style={{ width: "100%" }}
+            >
               <TextField
                 label="Email Address"
                 variant="outlined"
                 {...register("email_address")}
                 error={errors.email_address ? true : false}
+                className={s.text_field}
               />
               <Typography variant="inherit" color="textSecondary">
                 {errors.email_address?.message}
               </Typography>
-            </div>
-            <div className="password-form">
               <TextField
                 label="Password"
                 type={passwordState.showPassword ? "text" : "password"}
                 variant="outlined"
                 {...register("password")}
                 error={errors.password ? true : false}
+                className={s.text_field}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -158,22 +161,23 @@ function Register() {
               <Typography variant="inherit" color="textSecondary">
                 {errors.password?.message}
               </Typography>
-            </div>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              onClick={() => {
-                console.log(errors)
-              }}
-              name="login_button"
-            >
-              Login
-            </Button>
-            <Typography>{errors?.content}</Typography>
-            <Typography>{error && `${error}`}</Typography>
-          </Stack>
-        </form>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={() => {
+                  console.log(errors)
+                }}
+                name="login_button"
+                className={s.login_button}
+              >
+                Login
+              </Button>
+              <Typography>{errors?.content}</Typography>
+              <Typography>{error && `${error}`}</Typography>
+            </Stack>
+          </form>
+        </Paper>
       </div>
     </Container>
   )

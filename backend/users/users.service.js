@@ -2,6 +2,8 @@ const config = require("../config/config")
 const sql = require("mssql")
 const jwt = require("jsonwebtoken")
 const bcryptjs = require("bcryptjs")
+const db = require("../utils/orm")
+const { Sequelize, Op } = require("sequelize")
 
 // ============================================
 // General Users related operations
@@ -9,7 +11,6 @@ const bcryptjs = require("bcryptjs")
 
 const registerAlumnus = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
     const {
       first_name,
       last_name,
@@ -33,23 +34,14 @@ const registerAlumnus = async (req, res) => {
       return
     }
 
-    const user_record = await pool
-      .request()
-      .query(`SELECT * FROM users WHERE email_address = '${email_address}'`)
+    const user_record = await db.User.findOne({
+      attributes: ["email_address"],
+      where: {
+        email_address: email_address,
+      },
+    })
 
-    if (user_record.recordset.length > 0) {
-      res.status(409).json({
-        success: false,
-        message: "Username already exists!",
-      })
-      return
-    }
-
-    const email_record = await pool
-      .request()
-      .query(`SELECT * FROM users WHERE email_address = '${email_address}'`)
-
-    if (email_record.recordset.length > 0) {
+    if (user_record !== null) {
       res.status(409).json({
         success: false,
         message: "Email address is already in use",
@@ -57,20 +49,38 @@ const registerAlumnus = async (req, res) => {
       return
     }
 
-    // after successful registration, create JWT and return it for automatic login
-    await pool
-      .request()
-      .query(
-        `INSERT INTO users (first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES ('${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}');INSERT INTO general_users VALUES (SCOPE_IDENTITY(), ${batch}, '${user_bio}', '${user_company}', '${user_location}', '${user_job}', '${user_resume}');`
-      )
+    const curr_user = await db.User.create(
+      {
+        first_name,
+        last_name,
+        email_address,
+        mobile_number,
+        pass_hash,
+        user_image,
+      },
+      {
+        fields: [
+          "first_name",
+          "last_name",
+          "email_address",
+          "mobile_number",
+          "pass_hash",
+          "user_image",
+        ],
+      }
+    )
 
-    const curr_user = await pool
-      .request()
-      .query(
-        `SELECT TOP 1 usr_id FROM users WHERE email_address = '${email_address}' AND pass_hash = '${pass_hash}';`
-      )
+    const curr_g_user = await db.GeneralUser.create({
+      gu_user_id: parseInt(curr_user.usr_id, 10),
+      batch,
+      user_bio,
+      user_company,
+      user_location,
+      user_job,
+      user_resume,
+    })
 
-    if (curr_user.recordset.length == 0) {
+    if (curr_g_user == null) {
       res.status(401).json({
         success: false,
         message: "Username or password invalid!",
@@ -78,7 +88,7 @@ const registerAlumnus = async (req, res) => {
       return
     }
 
-    const user_id = parseInt(curr_user.recordset[0]["usr_id"], 10)
+    const user_id = parseInt(curr_user.usr_id, 10)
 
     const accessToken = jwt.sign({ user_id: user_id }, process.env.JWT_SECRET)
     const options = {
@@ -103,17 +113,18 @@ const registerAlumnus = async (req, res) => {
 
 const loginAlumnus = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
     let email_address = req.body.email_address
     let password = req.body.password
 
-    const user_record = await pool
-      .request()
-      .query(
-        `SELECT TOP 1 usr_id FROM users WHERE email_address = '${email_address}' AND pass_hash = '${password}';`
-      )
+    const user_record = await db.User.findOne({
+      attributes: ["usr_id", "email_address", "pass_hash"],
+      where: {
+        email_address: email_address,
+        pass_hash: password,
+      },
+    })
 
-    if (user_record.recordset.length == 0) {
+    if (user_record === null) {
       res.status(401).json({
         success: false,
         message: "Username or password invalid!",
@@ -121,7 +132,7 @@ const loginAlumnus = async (req, res) => {
       return
     }
 
-    const user_id = parseInt(user_record.recordset[0]["usr_id"], 10)
+    const user_id = parseInt(user_record.usr_id, 10)
 
     const accessToken = jwt.sign({ user_id: user_id }, process.env.JWT_SECRET)
     const options = {
@@ -162,12 +173,17 @@ const logoutAlumnus = async (req, res) => {
 
 const deleteAlumnus = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
-    const user_id = req.user.user_id
+    const usr_id = parseInt(req.user.user_id, 10)
 
-    await pool
-      .request()
-      .query(`DELETE FROM users WHERE is_admin = 0 AND usr_id = ${user_id};`)
+    // await pool
+    //   .request()
+    //   .query(`DELETE FROM users WHERE is_admin = 0 AND usr_id = ${user_id};`)
+    await db.User.destroy({
+      where: {
+        usr_id: usr_id,
+      },
+    })
+
     res.status(201).json({
       success: true,
       message: "User deleted successfully",
@@ -182,15 +198,40 @@ const deleteAlumnus = async (req, res) => {
 
 const getAllGeneralDetails = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
-    const generals = await pool
-      .request()
-      .query(
-        "SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id;"
-      )
+    const [results, metadata] = await db.sequelize.query(
+      "SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id;"
+    )
+
+    // const records = await db.User.findAll({
+    //   attributes: [
+    //     "usr_id",
+    //     "first_name",
+    //     "last_name",
+    //     "email_address",
+    //     "mobile_number",
+    //     "pass_hash",
+    //   ],
+    //   where: {},
+    //   include: [
+    //     {
+    //       model: db.GeneralUser,
+    //       attributes: [
+    //         "batch",
+    //         "user_bio",
+    //         "user_company",
+    //         "user_location",
+    //         "user_job",
+    //         "user_resume",
+    //       ],
+    //       where: { gu_user_id: { [Op.eq]: Sequelize.col("usr_id") } },
+    //       required: true,
+    //     },
+    //   ],
+    // })
+
     res.status(200).json({
       success: true,
-      data: generals.recordset,
+      data: results,
     })
   } catch (err) {
     res.status(500).json({
@@ -202,11 +243,12 @@ const getAllGeneralDetails = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
-    const users = await pool.request().query("SELECT * from users;")
+    const users = await db.User.findAll()
+    // const [results, metadata] = await db.sequelize.query("SELECT * from users;")
+
     res.status(200).json({
       success: true,
-      data: users.recordset,
+      data: users,
     })
   } catch (err) {
     res.status(500).json({
@@ -218,7 +260,7 @@ const getAllUsers = async (req, res) => {
 
 const getAlumnusById = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
+    // let pool = await sql.connect(config)
     const user_id = parseInt(req.params.user_id, 10)
 
     if (isNaN(user_id)) {
@@ -229,13 +271,16 @@ const getAlumnusById = async (req, res) => {
       return
     }
 
-    const users = await pool
-      .request()
-      .query(
-        `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
-      )
+    // const users = await pool
+    //   .request()
+    //   .query(
+    //     `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
+    //   )
+    const [users, metadata] = await db.sequelize.query(
+      `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
+    )
 
-    if (users.recordset.length == 0) {
+    if (users === null || users.length === 0) {
       res.status(404).json({
         success: false,
         error: "User id does not exist",
@@ -245,7 +290,7 @@ const getAlumnusById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: users.recordset,
+      data: users[0],
     })
   } catch (err) {
     res.status(500).json({

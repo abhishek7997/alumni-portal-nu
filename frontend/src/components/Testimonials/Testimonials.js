@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from "react-responsive-carousel"
-import "./Testimonials.css"
+import s from "./Testimonials.module.css"
 
 const sample_details = [
   {

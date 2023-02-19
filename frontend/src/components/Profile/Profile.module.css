@@ -1,0 +1,71 @@
+.resume_update {
+  margin: 10px;
+}
+
+.text_muted_company {
+  font-weight: bold;
+}
+
+.rounded_circle {
+  clip-path: circle(50%);
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.list_item {
+  display: flex;
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.list_item > div:nth-child(1) {
+  width: 40%;
+}
+
+.list_item > div:nth-child(1) > p {
+  font-weight: bold;
+}
+
+.list_item > div:nth-child(2) {
+  width: 60%;
+}
+
+@media screen and (max-width: 867px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .col {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 512px) {
+  .list_item {
+    flex-direction: column;
+  }
+}

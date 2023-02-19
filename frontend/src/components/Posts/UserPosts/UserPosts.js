@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { fetchPosts } from "../../../features/userPosts/userPostsActions"
 import { Box, Paper, Container, Typography } from "@mui/material"
-import "./UserPosts.css"
+import s from "./UserPosts.module.css"
 import CircularProgressIndicator from "../../CircularProgressIndicator/CircularProgressIndicator"
 
 const UserPosts = () => {
@@ -40,7 +40,7 @@ const UserPosts = () => {
               paddingBottom: "1.2rem",
             }}
           >
-            <Typography component="div" className="title-text" variant="h3">
+            <Typography component="div" className={s.title_text} variant="h3">
               User posts
             </Typography>
           </Paper>
@@ -80,18 +80,18 @@ export const UserPost = ({ data }) => {
     */
   const created_at = new Date(data.created_at).toDateString()
   return (
-    <div className="post-container">
-      <div className="post-name">
+    <div className={s.post_container}>
+      <div className={s.post_name}>
         <div>
           <Typography variant="h5">{data.full_name}</Typography>
         </div>
       </div>
-      <div className="post-content">
+      <div className={s.post_content}>
         <div>
           <Typography variant="body1">{data.content}</Typography>
         </div>
       </div>
-      <div className="post-date">
+      <div className={s.post_date}>
         <div>
           <Typography variant="body2">Created at : {created_at}</Typography>
         </div>

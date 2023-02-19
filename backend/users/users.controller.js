@@ -22,7 +22,7 @@ router
   .get(isAuthenticatedUser, getCurrentAlumnusDetails)
 router.route("/users/alumnus/others").get(isAuthenticatedUser, getOtherUsers)
 router.route("/users/alumnus/login").post(loginAlumnus)
-router.route("/users/alumnus/logout").post(isAuthenticatedUser, logoutAlumnus)
+router.route("/users/alumnus/logout").post(logoutAlumnus)
 router.route("/users/alumnus/register").post(registerAlumnus)
 router
   .route("/users/alumnus/delete")

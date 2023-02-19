@@ -1,12 +1,12 @@
-#centerDiv {
+.center_div {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
-  min-height: 90vh;
+  /* min-height: 90vh; */
 }
 
-#survey-form {
+.survey_form {
   margin: auto;
   padding: 1.2rem 1.4rem;
   margin-top: 40px;
@@ -17,15 +17,25 @@
   height: 100%;
 }
 
-.password-form {
-  display: flex;
+.text_field {
+  width: 48%;
 }
 
 span {
   width: 50px;
 }
 
-#h1 {
-  margin: 0 auto;
-  text-align: center;
+.login_button {
+  font-size: 1.3rem;
+  padding: 0.5rem 3rem;
+}
+
+@media screen and (max-width: 964px) {
+  .text_field {
+    width: 100%;
+  }
+
+  .login_button {
+    width: 100%;
+  }
 }

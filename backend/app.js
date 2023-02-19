@@ -14,6 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 
+require("./utils/orm")
+
 app.use("/api/v1", user)
 app.use("/api/v1", post)
 app.use("/api/v1", document)

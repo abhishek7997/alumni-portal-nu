@@ -1,34 +1,34 @@
-.title-text {
+.title_text {
   background-color: #fefefe;
   text-align: center;
   margin: 1.2rem auto;
 }
 
-/* .post-container {
+/* .post_container {
   padding: 1rem 2rem;
 } */
 
-.post-name {
+.post_name {
   border-bottom: 2px solid rgb(202, 202, 202);
 }
 
-.post-name > div {
+.post_name > div {
   padding: 1rem 2rem;
 }
 
-.post-content {
+.post_content {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
 
-.post-content > div {
+.post_content > div {
   padding: 1rem 2rem;
 }
 
-.post-date {
+.post_date {
   border-top: 2px solid rgb(202, 202, 202);
 }
 
-.post-date > div {
+.post_date > div {
   padding: 1rem 2rem;
 }

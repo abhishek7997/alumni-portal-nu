@@ -1,6 +1,6 @@
 import React from "react"
 import Testimonials from "../Testimonials/Testimonials"
-import "./Home.css"
+import s from "./Home.module.css"
 
 const text = `At NIIT University (NU), our endeavour is to create a vibrant
           intellectual environment that nurtures the free thinker, the
@@ -39,14 +39,14 @@ const text = `At NIIT University (NU), our endeavour is to create a vibrant
 const Home = () => {
   return (
     <>
-      <div className="top">
+      <div className={s.top}>
         <img src="images/alumni.jpg" width="100%" />
       </div>
       <div>
-        <div className="text">
+        <div className={s.text}>
           <p>{text}</p>
         </div>
-        <Testimonials className="testimonials"></Testimonials>
+        {/* <Testimonials className={s.testimonials}></Testimonials> */}
       </div>
     </>
   )
