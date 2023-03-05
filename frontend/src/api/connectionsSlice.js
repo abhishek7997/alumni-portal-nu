@@ -10,7 +10,34 @@ export const connectionsSlice = createApi({
     getOthers: builder.query({
       query: () => "/users/alumnus/others",
     }),
+    getCurrentUserDetails: builder.query({
+      query: () => "/users/alumnus/",
+    }),
+    createPost: builder.mutation({
+      query: (data) => ({
+        url: "/posts/general_posts/create",
+        method: "post",
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": true,
+          credentials: "include",
+        },
+      }),
+    }),
+    getPostByPostId: builder.query({
+      query: (post_id) => `/posts/general_posts/${post_id}`,
+    }),
+    getPostCommentsByPostId: builder.query({
+      query: (post_id) => `posts/post_comments/${post_id}`,
+    }),
   }),
 })
 
-export const { useGetOthersQuery } = connectionsSlice
+export const {
+  useGetOthersQuery,
+  useGetCurrentUserDetailsQuery,
+  useCreatePostMutation,
+  useGetPostByPostIdQuery,
+  useGetPostCommentsByPostIdQuery,
+} = connectionsSlice

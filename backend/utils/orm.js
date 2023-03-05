@@ -1,7 +1,8 @@
 require("dotenv").config()
 const tedious = require("tedious")
 const { Sequelize } = require("sequelize")
-const { User, GeneralUser } = require("../users/users.model")
+const { User, GeneralUser, Admin } = require("../users/users.model")
+const { UserPost, GeneralPost, PostComment } = require("../posts/posts.model")
 
 const dbName = process.env.DATABASE
 const dbConfig = {
@@ -43,14 +44,56 @@ async function initialize() {
   // init models and add them to the exported db object
   db.User = User(sequelize)
   db.GeneralUser = GeneralUser(sequelize)
+  db.Admin = Admin(sequelize)
+  db.UserPost = UserPost(sequelize)
+  db.GeneralPost = GeneralPost(sequelize)
+  db.PostComment = PostComment(sequelize)
   db.sequelize = sequelize
 
   db.User.hasOne(db.GeneralUser, {
-    onDelete: "CASCADE",
     foreignKey: "gu_user_id",
   })
+
+  db.User.hasOne(db.Admin, {
+    foreignKey: "adm_user_id",
+  })
+
   db.GeneralUser.belongsTo(db.User, {
     foreignKey: "gu_user_id",
+    onDelete: "CASCADE",
+  })
+
+  db.Admin.belongsTo(db.User, {
+    foreignKey: "adm_user_id",
+    onDelete: "CASCADE",
+  })
+
+  db.UserPost.belongsTo(db.User, {
+    foreignKey: "post_user_id",
+    onDelete: "CASCADE",
+  })
+
+  db.User.hasMany(db.UserPost, { foreignKey: "post_user_id" })
+  db.UserPost.belongsTo(db.User, {
+    foreignKey: "post_user_id",
+    onDelete: "CASCADE",
+  })
+
+  db.UserPost.hasOne(db.GeneralPost, { foreignKey: "post_id" })
+  db.GeneralPost.belongsTo(db.UserPost, {
+    foreignKey: "post_id",
+    onDelete: "CASCADE",
+  })
+
+  db.UserPost.hasMany(db.PostComment, { foreignKey: "post_id" })
+  db.PostComment.belongsTo(db.UserPost, {
+    foreignKey: "post_id",
+    onDelete: "CASCADE",
+  })
+
+  // db.User.hasMany(db.PostComment, { foreignKey: "pc_user_id" })
+  db.PostComment.belongsTo(db.User, {
+    foreignKey: "pc_user_id",
   })
 
   // test connection

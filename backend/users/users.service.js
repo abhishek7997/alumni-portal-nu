@@ -3,6 +3,7 @@ const sql = require("mssql")
 const jwt = require("jsonwebtoken")
 const bcryptjs = require("bcryptjs")
 const db = require("../utils/orm")
+const { generateRandomSeed } = require("../utils/rsg")
 const { Sequelize, Op } = require("sequelize")
 
 // ============================================
@@ -49,6 +50,7 @@ const registerAlumnus = async (req, res) => {
       return
     }
 
+    const seed = generateRandomSeed(9)
     const curr_user = await db.User.create(
       {
         first_name,
@@ -56,7 +58,7 @@ const registerAlumnus = async (req, res) => {
         email_address,
         mobile_number,
         pass_hash,
-        user_image,
+        user_image: `https://picsum.photos/seed/${seed}/200/300`,
       },
       {
         fields: [
@@ -66,12 +68,14 @@ const registerAlumnus = async (req, res) => {
           "mobile_number",
           "pass_hash",
           "user_image",
+          "created_at",
         ],
       }
     )
 
+    const user_id = parseInt(curr_user.usr_id, 10)
     const curr_g_user = await db.GeneralUser.create({
-      gu_user_id: parseInt(curr_user.usr_id, 10),
+      gu_user_id: user_id,
       batch,
       user_bio,
       user_company,
@@ -87,8 +91,6 @@ const registerAlumnus = async (req, res) => {
       })
       return
     }
-
-    const user_id = parseInt(curr_user.usr_id, 10)
 
     const accessToken = jwt.sign({ user_id: user_id }, process.env.JWT_SECRET)
     const options = {
@@ -159,6 +161,11 @@ const loginAlumnus = async (req, res) => {
 const logoutAlumnus = async (req, res) => {
   try {
     res.clearCookie("accessToken")
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem("accessToken")
+      localStorage.removeItem("profileInfo")
+      localStorage.removeItem("userInfo")
+    }
     res.json({
       success: true,
       message: "Logged out",
@@ -175,11 +182,9 @@ const deleteAlumnus = async (req, res) => {
   try {
     const usr_id = parseInt(req.user.user_id, 10)
 
-    // await pool
-    //   .request()
-    //   .query(`DELETE FROM users WHERE is_admin = 0 AND usr_id = ${user_id};`)
     await db.User.destroy({
       where: {
+        is_admin: 0,
         usr_id: usr_id,
       },
     })
@@ -260,7 +265,6 @@ const getAllUsers = async (req, res) => {
 
 const getAlumnusById = async (req, res) => {
   try {
-    // let pool = await sql.connect(config)
     const user_id = parseInt(req.params.user_id, 10)
 
     if (isNaN(user_id)) {
@@ -271,11 +275,6 @@ const getAlumnusById = async (req, res) => {
       return
     }
 
-    // const users = await pool
-    //   .request()
-    //   .query(
-    //     `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
-    //   )
     const [users, metadata] = await db.sequelize.query(
       `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
     )
@@ -303,15 +302,23 @@ const getAlumnusById = async (req, res) => {
 const getCurrentAlumnusDetails = async (req, res) => {
   try {
     const user_id = req.user.usr_id
-    let pool = await sql.connect(config)
-    const user = await pool
-      .request()
-      .query(
-        `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_image, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
-      )
+    const [users, metadata] = await db.sequelize.query(
+      `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_image, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
+    )
+    console.log("METADATA: ", metadata)
+    console.log("USERS: ", users)
+
+    if (metadata === 0) {
+      res.status(404).json({
+        success: true,
+        data: null,
+      })
+      return
+    }
+
     res.status(200).json({
       success: true,
-      data: user.recordset,
+      data: users[0],
     })
   } catch (err) {
     res.status(500).json({
@@ -324,15 +331,30 @@ const getCurrentAlumnusDetails = async (req, res) => {
 const getOtherUsers = async (req, res) => {
   try {
     const user_id = parseInt(req.user.usr_id, 10)
-    let pool = await sql.connect(config)
-    const user = await pool
-      .request()
-      .query(
-        `SELECT usr_id, CONCAT(first_name, ' ', last_name) AS full_name, batch FROM users, general_users WHERE usr_id != ${user_id} AND general_users.gu_user_id = users.usr_id;`
-      )
+    // const [users, metadata] = await db.sequelize.query(
+    //   `SELECT usr_id, CONCAT(first_name, ' ', last_name) AS full_name, batch FROM users, general_users WHERE usr_id != ${user_id} AND general_users.gu_user_id = users.usr_id;`
+    // )
+
+    const users = await db.User.findAll({
+      where: {
+        [Op.not]: {
+          usr_id: user_id,
+        },
+      },
+      include: [
+        {
+          model: db.GeneralUser,
+          where: {
+            gu_user_id: { [Op.col]: "User.usr_id" },
+          },
+          attributes: ["batch"],
+        },
+      ],
+    })
+
     res.status(200).json({
       success: true,
-      data: user.recordset,
+      data: users,
     })
   } catch (err) {
     res.status(500).json({
@@ -348,15 +370,13 @@ const getOtherUsers = async (req, res) => {
 
 const getAllAdmins = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
-    const admins = await pool
-      .request()
-      .query(
-        "SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, [role] FROM users U, admins A WHERE U.usr_id = A.adm_user_id"
-      )
+    const [admins, metadata] = await db.sequelize.query(
+      "SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, [role] FROM users U, admins A WHERE U.usr_id = A.adm_user_id"
+    )
+
     res.status(200).json({
       success: true,
-      data: admins.recordset,
+      data: admins,
     })
   } catch (err) {
     res.status(500).json({
@@ -368,7 +388,7 @@ const getAllAdmins = async (req, res) => {
 
 const registerAdmin = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
+    // let pool = await sql.connect(config)
     const {
       first_name,
       last_name,
@@ -379,11 +399,40 @@ const registerAdmin = async (req, res) => {
       role,
     } = req.body
 
-    await pool
-      .request()
-      .query(
-        `INSERT INTO users (is_admin, first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES (1, '${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}'); INSERT INTO admins VALUES (SCOPE_IDENTITY(), '${role}');`
-      )
+    // await pool
+    //   .request()
+    //   .query(
+    //     `INSERT INTO users (is_admin, first_name, last_name, email_address, mobile_number, pass_hash, user_image) VALUES (1, '${first_name}', '${last_name}', '${email_address}', '${mobile_number}', '${pass_hash}', '${user_image}'); INSERT INTO admins VALUES (SCOPE_IDENTITY(), '${role}');`
+    //   )
+
+    const curr_user = await db.User.create(
+      {
+        is_admin: true,
+        first_name,
+        last_name,
+        email_address,
+        mobile_number,
+        pass_hash,
+        user_image,
+      },
+      {
+        fields: [
+          "is_admin",
+          "first_name",
+          "last_name",
+          "email_address",
+          "mobile_number",
+          "pass_hash",
+          "user_image",
+        ],
+      }
+    )
+
+    await db.Admin.create({
+      adm_user_id: parseInt(curr_user.usr_id, 10),
+      role,
+    })
+
     res.status(200).json({
       success: true,
       message: "User account created",

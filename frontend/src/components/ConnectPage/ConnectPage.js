@@ -1,8 +1,15 @@
 import { React, useState } from "react"
-import { Grid, TextField, Container } from "@mui/material"
+import {
+  Grid,
+  TextField,
+  Container,
+  Card,
+  Typography,
+  Button,
+} from "@mui/material"
 import { useGetOthersQuery } from "../../api/connectionsSlice"
 import CircularProgressIndicator from "../CircularProgressIndicator/CircularProgressIndicator"
-import "./ConnectPage.css"
+import s from "./ConnectPage.module.css"
 
 function ConnectPage() {
   const [inputText, setInputText] = useState("")
@@ -32,7 +39,7 @@ function ConnectPage() {
       component="div"
     >
       <h1>Alumni Connect</h1>
-      <div className="search">
+      <div className={s.search}>
         <TextField
           onChange={inputHandler}
           variant="outlined"
@@ -42,7 +49,7 @@ function ConnectPage() {
         />
       </div>
       <Grid
-        className="peoples-list"
+        className={s.peoples_list}
         container
         rowSpacing={1}
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -57,9 +64,11 @@ function UsersList({ data, input }) {
   const filteredData = data.filter((el) => {
     if (input === "") return el
 
+    const full_name = `${el.first_name} ${el.last_name}`
+
     return (
-      el.full_name.toLowerCase().includes(input) ||
-      el.batch.toString().includes(input)
+      full_name.toLowerCase().includes(input) ||
+      el.GeneralUser.batch.toString().includes(input)
     )
   })
 
@@ -68,9 +77,9 @@ function UsersList({ data, input }) {
       {filteredData.map((item) => (
         <Grid item key={parseInt(item.usr_id)}>
           <ConnectCard
-            batch={item.batch}
-            name={item.full_name}
-            photo={item.photo}
+            batch={item.GeneralUser.batch}
+            name={`${item.first_name} ${item.last_name}`}
+            photo={item.user_image}
           />
         </Grid>
       ))}
@@ -82,19 +91,19 @@ function ConnectCard({ batch, name, photo }) {
   const pic = photo ?? "logo512.png"
 
   return (
-    <div className="MainCard">
+    <Card className={s.main_card}>
       <div>
-        <img src={pic} className="CardImage"></img>
+        <img src={pic} className={s.card_image}></img>
       </div>
 
-      <div className="Yo">
-        <p className="Text">{name}</p>
-        <p className="Text">{batch}</p>
-        <button type="button" className="Card-Button">
+      <div className={s.card_body}>
+        <Typography className={s.text}>{name}</Typography>
+        <Typography className={s.text}>{batch}</Typography>
+        <Button variant="outlined" fullWidth className={s.card_button}>
           Connect
-        </button>
+        </Button>
       </div>
-    </div>
+    </Card>
   )
 }
 

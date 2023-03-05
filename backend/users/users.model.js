@@ -1,23 +1,42 @@
-const { DataTypes } = require("sequelize")
+const { DataTypes, Sequelize } = require("sequelize")
 
 function User(sequelize) {
   const attributes = {
-    usr_id: { type: DataTypes.BIGINT, primaryKey: true, autoincrement: true },
-    is_admin: { type: DataTypes.BOOLEAN, default: false },
-    first_name: { type: DataTypes.STRING(64), allowNull: false },
-    last_name: { type: DataTypes.STRING(64), allowNull: true },
+    usr_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    is_admin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    first_name: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
+    },
+    last_name: {
+      type: DataTypes.STRING(64),
+    },
     email_address: {
       type: DataTypes.STRING(64),
       allowNull: false,
       unique: true,
     },
-    mobile_number: { type: DataTypes.STRING(32) },
-    pass_hash: { type: DataTypes.STRING(256), allowNull: false },
-    user_image: { type: DataTypes.STRING(1024) },
+    mobile_number: {
+      type: DataTypes.STRING(32),
+    },
+    pass_hash: {
+      type: DataTypes.STRING(512),
+      allowNull: false,
+    },
+    user_image: {
+      type: DataTypes.STRING(1024),
+    },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
+      defaultValue: Sequelize.NOW,
     },
   }
 
@@ -32,6 +51,7 @@ function User(sequelize) {
     },
     tableName: "users",
     timestamps: false,
+    underscored: true,
   }
 
   return sequelize.define("User", attributes, options)
@@ -42,7 +62,6 @@ function GeneralUser(sequelize) {
     gu_user_id: {
       type: DataTypes.BIGINT,
       primaryKey: true,
-      autoincrement: false,
     },
     batch: {
       type: DataTypes.SMALLINT,
@@ -73,4 +92,29 @@ function GeneralUser(sequelize) {
   return sequelize.define("GeneralUser", attributes, options)
 }
 
-module.exports = { User, GeneralUser }
+function Admin(sequelize) {
+  const attributes = {
+    adm_user_id: {
+      type: DataTypes.BIGINT,
+      primaryKey: true,
+      references: {
+        model: "users",
+        key: "usr_id",
+      },
+      onDelete: "CASCADE",
+    },
+    role: {
+      type: DataTypes.STRING(64),
+    },
+  }
+
+  const options = {
+    tableName: "admins",
+    timestamps: false,
+    underscored: true,
+  }
+
+  return sequelize.define("Admin", attributes, options)
+}
+
+module.exports = { User, GeneralUser, Admin }

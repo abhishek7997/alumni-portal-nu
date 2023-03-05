@@ -30,10 +30,10 @@ const profileSlice = createSlice({
       state.error = null
     },
     [getLoggedInUserDetails.fulfilled]: (state, { payload }) => {
-      localStorage.setItem("profileInfo", JSON.stringify(payload.data[0]))
+      localStorage.setItem("profileInfo", JSON.stringify(payload.data))
       state.loading = false
       state.success = true // registration successful
-      state.profileInfo = payload.data[0]
+      state.profileInfo = payload.data
     },
     [getLoggedInUserDetails.rejected]: (state, { payload }) => {
       state.loading = false

@@ -18,7 +18,7 @@ export default function NewNavbar() {
   return (
     <nav className={s.nav}>
       <div className={s.left_container}>
-        <img src="images/download.png" className={s.logo} />
+        <img src="/images/download.png" className={s.logo} />
         <Link to="/" className={s.site_title}>
           NIIT UNIVERSITY
         </Link>

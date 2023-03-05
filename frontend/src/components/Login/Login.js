@@ -107,9 +107,6 @@ function Register() {
             paddingBottom: "1.2rem",
           }}
         >
-          <Typography component="div" variant="h3">
-            Login
-          </Typography>
           <form
             className={s.survey_form}
             // className={classes.root}
@@ -122,6 +119,9 @@ function Register() {
               spacing={2}
               style={{ width: "100%" }}
             >
+              <Typography component="div" variant="h3">
+                Login
+              </Typography>
               <TextField
                 label="Email Address"
                 variant="outlined"

@@ -1,5 +1,7 @@
 const config = require("../config/config")
 const sql = require("mssql")
+const db = require("../utils/orm")
+const { Sequelize, Op } = require("sequelize")
 
 const createEventPost = async (req, res) => {
   try {
@@ -72,15 +74,27 @@ WHERE U.usr_id = ${user_id} AND EP.ep_user_id = U.usr_id;`
 
 const createGeneralPost = async (req, res) => {
   try {
-    const post_user_id = req.user.usr_id
+    const post_user_id = parseInt(req.user.usr_id, 10)
     const content = req.body.content
     // const media = req.body.media ?? null
 
-    const query = `INSERT INTO user_posts (post_user_id) VALUES (${post_user_id});
-INSERT INTO general_posts (post_id, gp_user_id, content) VALUES (SCOPE_IDENTITY(), ${post_user_id}, '${content}');`
+    //     const query = `INSERT INTO user_posts (post_user_id) VALUES (${post_user_id});
+    // INSERT INTO general_posts (post_id, gp_user_id, content) VALUES (SCOPE_IDENTITY(), ${post_user_id}, '${content}');`
 
-    let pool = await sql.connect(config)
-    await pool.request().query(query)
+    const userpost = await db.UserPost.create({
+      post_user_id: post_user_id,
+    })
+
+    const general_post = await db.GeneralPost.create({
+      post_id: userpost.post_id,
+      gp_user_id: post_user_id,
+      content: content,
+    })
+
+    if (general_post === null) {
+      throw "Error occured when creating general Post"
+    }
+
     res.status(201).json({
       success: true,
       message: "General Post created",
@@ -95,14 +109,40 @@ INSERT INTO general_posts (post_id, gp_user_id, content) VALUES (SCOPE_IDENTITY(
 
 const getAllGeneralPosts = async (req, res) => {
   try {
-    const query =
-      "SELECT CONCAT(U.first_name, ' ', last_name) AS full_name, GP.*FROM users U, general_posts GP WHERE U.usr_id = GP.gp_user_id ORDER BY created_at DESC;"
-    let pool = await sql.connect(config)
-    const general_posts = await pool.request().query(query)
+    // const query =
+    //   "SELECT CONCAT(U.first_name, ' ', last_name) AS full_name, GP.*FROM users U, general_posts GP WHERE U.usr_id = GP.gp_user_id ORDER BY created_at DESC;"
+    // let pool = await sql.connect(config)
+    // const general_posts = await pool.request().query(query)
+
+    const general_posts = await db.GeneralPost.findAll({
+      include: [
+        {
+          model: db.UserPost,
+          include: {
+            model: db.User,
+            attributes: ["first_name", "last_name"],
+          },
+        },
+      ],
+      order: [["created_at", "DESC"]],
+      raw: true,
+    })
+
+    const transformedPosts = general_posts.map((post) => {
+      return {
+        post_id: post.post_id,
+        gp_user_id: post.gp_user_id,
+        content: post.content,
+        media: post.media,
+        created_at: post.created_at,
+        first_name: post["UserPost.User.first_name"],
+        last_name: post["UserPost.User.last_name"],
+      }
+    })
 
     res.status(201).json({
       success: true,
-      data: general_posts.recordset,
+      data: transformedPosts,
     })
   } catch (err) {
     res.status(500).json({
@@ -115,13 +155,21 @@ const getAllGeneralPosts = async (req, res) => {
 const getGeneralPostsByUserId = async (req, res) => {
   try {
     const gp_user_id = req.params.user_id
-    const query = `SELECT GP.* FROM users U, general_posts GP WHERE U.usr_id = ${gp_user_id} and GP.gp_user_id = U.usr_id;`
+    // const query = `SELECT GP.* FROM users U, general_posts GP WHERE U.usr_id = ${gp_user_id} and GP.gp_user_id = U.usr_id;`
 
-    let pool = await sql.connect(config)
-    const general_posts = await pool.request().query(query)
+    const general_posts = await db.GeneralPost.findAll({
+      where: { gp_user_id: gp_user_id },
+      // include: [
+      //   {
+      //     model: db.UserPost,
+      //     include: { model: db.User, where: { usr_id: gp_user_id } },
+      //   },
+      // ],
+    })
+
     res.status(201).json({
       success: true,
-      data: general_posts.recordset,
+      data: general_posts,
     })
   } catch (err) {
     res.status(500).json({
@@ -133,15 +181,19 @@ const getGeneralPostsByUserId = async (req, res) => {
 
 const addPostComment = async (req, res) => {
   try {
-    let pool = await sql.connect(config)
     const pc_user_id = req.user.usr_id
     const post_id = req.body.post_id
     const content = req.body.content
-    const query = `INSERT INTO post_comments (post_id, pc_user_id, content) VALUES (${post_id}, ${pc_user_id}, '${content}');`
-    await pool.request().query(query)
+
+    const result = await db.PostComment.create({
+      post_id,
+      pc_user_id,
+      content,
+    })
+
     res.status(201).json({
       success: true,
-      message: "Comment added!",
+      data: result.toJSON(),
     })
   } catch (err) {
     res.status(500).json({
@@ -181,11 +233,161 @@ const getPostCommentsOfPostById = async (req, res) => {
   try {
     let pool = await sql.connect(config)
     const post_id = parseInt(req.params.post_id, 10)
-    const query = `SELECT PC.* FROM users U, post_comments PC WHERE PC.post_id = ${post_id} AND PC.pc_user_id = U.usr_id;`
-    const post_comments = await pool.request().query(query)
+    // const query = `SELECT PC.* FROM users U, post_comments PC WHERE PC.post_id = ${post_id} AND PC.pc_user_id = U.usr_id;`
+    // const post_comments = await pool.request().query(query)
+
+    const results = await db.PostComment.findAll({
+      where: {
+        post_id: post_id,
+      },
+      include: {
+        model: db.User,
+        where: {
+          usr_id: { [Op.eq]: Sequelize.col("PostComment.pc_user_id") },
+        },
+        attributes: [],
+      },
+      order: [["created_at", "DESC"]],
+    })
+
     res.status(201).json({
       success: true,
-      data: post_comments.recordset,
+      data: results,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: `${err}`,
+    })
+  }
+}
+
+const updateGeneralPost = async (req, res) => {
+  try {
+    const post_user_id = parseInt(req.user.usr_id, 10)
+    const { post_id } = req.params
+    const { content } = req.body
+
+    const [numRowsUpdated, [updatedPost]] = await db.GeneralPost.update(
+      {
+        content: content,
+      },
+      {
+        where: {
+          gp_user_id: post_user_id,
+          post_id: post_id,
+        },
+        returning: true,
+      }
+    )
+
+    if (numRowsUpdated === 0) {
+      res.status(404).json({
+        success: false,
+        error: "Invalid post or invalid user",
+      })
+      return
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updatedPost,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: `${err}`,
+    })
+  }
+}
+
+const deleteGeneralPost = async (req, res) => {
+  try {
+    const user_id = parseInt(req.user.usr_id, 10)
+    const post_id = parseInt(req.params.post_id, 10)
+
+    if (isNaN(user_id) || isNaN(post_id)) {
+      res.status(401).json({
+        success: false,
+        error: "Login to access resource",
+      })
+    }
+
+    const rows = await db.UserPost.destroy({
+      where: {
+        post_id: post_id,
+        post_user_id: user_id,
+      },
+    })
+
+    if (rows !== 1) {
+      res.status(404).json({
+        success: false,
+        error: "Post not found",
+      })
+      return
+    }
+
+    res.status(201).json({
+      success: true,
+      data: post_id,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: `${err}`,
+    })
+  }
+}
+
+const getGeneralPostDetails = async (req, res) => {
+  try {
+    const post_id = parseInt(req.params.post_id, 10)
+
+    if (isNaN(post_id)) {
+      res.status(401).json({
+        success: false,
+        error: "Invalid post id",
+      })
+      return
+    }
+
+    const postDetail = await db.GeneralPost.findByPk(post_id, {
+      include: [
+        {
+          model: db.UserPost,
+          include: [
+            {
+              model: db.User,
+              attributes: ["first_name", "last_name"],
+            },
+          ],
+        },
+      ],
+    })
+
+    const { gp_user_id, content, media, created_at, UserPost } = postDetail
+    const { first_name, last_name } = UserPost.User
+
+    if (!postDetail) {
+      res.status(404).json({
+        success: false,
+        error: "Post not found",
+      })
+      return
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        post_id,
+        gp_user_id,
+        content,
+        media,
+        created_at,
+        first_name,
+        last_name,
+      },
     })
   } catch (err) {
     res.status(500).json({
@@ -205,4 +407,7 @@ module.exports = {
   addPostComment,
   getAllPostComments,
   getPostCommentsOfPostById,
+  updateGeneralPost,
+  deleteGeneralPost,
+  getGeneralPostDetails,
 }

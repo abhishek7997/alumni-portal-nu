@@ -43,21 +43,21 @@ const useStyles = makeStyles((theme) => ({
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required("First name is required"),
-  last_name: yup.string().required("Last name is required"),
+  last_name: yup.string().nullable().default(null),
   email_address: yup
     .string()
-    .required("email_address is required")
+    .required("An email address is required")
     .email("email_address is invalid"),
   password: yup
     .string()
     .required("Password is required")
-    .min(6, "Password must be at least 6 characters")
+    .min(6, "Password must have at least 6 characters")
     .max(40, "Password must not exceed 40 characters"),
   confirmPassword: yup
     .string()
     .required("Confirm Password is required")
     .oneOf([yup.ref("password"), null], "Confirm Password does not match"),
-  mobile_number: yup.string().required("Phone number is required"),
+  mobile_number: yup.string().nullable().default(null),
   user_bio: yup.string(),
   batch: yup
     .number()
@@ -153,10 +153,6 @@ function Register() {
             paddingBottom: "1.2rem",
           }}
         >
-          <Typography component="div" variant="h3">
-            Register
-          </Typography>
-
           <form
             className={s.survey_form}
             autoComplete="off"
@@ -168,6 +164,9 @@ function Register() {
               spacing={2}
               style={{ width: "100%" }}
             >
+              <Typography component="div" variant="h3">
+                Register
+              </Typography>
               <TextField
                 label="First Name"
                 variant="outlined"
@@ -189,7 +188,7 @@ function Register() {
                 {errors.last_name?.message}
               </Typography>
               <TextField
-                label="email_address"
+                label="Email Address"
                 variant="outlined"
                 {...register("email_address")}
                 error={errors.email_address ? true : false}
@@ -228,6 +227,7 @@ function Register() {
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
+                        tabIndex={-1}
                       >
                         {passwordState.showPassword ? (
                           <VisibilityOff />
@@ -257,6 +257,7 @@ function Register() {
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
+                        tabIndex={-1}
                       >
                         {passwordState.showPassword ? (
                           <VisibilityOff />
@@ -291,14 +292,14 @@ function Register() {
                 error={errors.batch ? true : false}
               />
               <TextField
-                label="user_company"
+                label="User Company"
                 variant="outlined"
                 {...register("user_company")}
                 className={s.text_field}
                 error={errors.user_company ? true : false}
               />
               <TextField
-                label="user_location"
+                label="User Location"
                 variant="outlined"
                 {...register("user_location")}
                 className={s.text_field}
@@ -311,19 +312,17 @@ function Register() {
                 className={s.text_field}
                 error={errors.user_job ? true : false}
               />
-              <Button variant="contained" component="label">
-                Resume Upload
-                <input hidden accept="image/*" multiple type="file" />
-              </Button>
-              Profile Picture:
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-              >
-                <input hidden accept="image/*" type="file" />
-                <PhotoCamera />
-              </IconButton>
+              {/* <div>
+                Profile Picture:
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="label"
+                >
+                  <input hidden accept="image/*" type="file" />
+                  <PhotoCamera />
+                </IconButton>
+              </div> */}
               <Button
                 variant="contained"
                 color="primary"

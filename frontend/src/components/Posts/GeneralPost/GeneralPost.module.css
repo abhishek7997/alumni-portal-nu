@@ -25,6 +25,15 @@
   padding: 1rem 2rem;
 }
 
+/* .post_comment_content {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+} */
+
+.post_comment_content > div {
+  padding: 1rem 2rem;
+}
+
 .post_date {
   border-top: 2px solid rgb(202, 202, 202);
 }
@@ -79,4 +88,17 @@ button {
 
 .right_icon {
   margin-left: 1px;
+}
+
+.comment_window {
+  width: 100%;
+}
+
+.comment_textfield {
+  width: 100%;
+}
+
+.add_comment_button {
+  margin: 0.5rem 0.5rem;
+  outline: none !important;
 }

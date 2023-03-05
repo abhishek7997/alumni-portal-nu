@@ -8,6 +8,9 @@ import Login from "./components/Login/Login"
 import Logout from "./components/Logout/Logout"
 import ProtectedRoute from "./utils/ProtectedRoute"
 import UserPosts from "./components/Posts/UserPosts/UserPosts"
+import CreateGeneralPost from "./components/Posts/CreatePost/CreatePost"
+import EditGeneralPost from "./components/Posts/EditPost/EditPost"
+import GeneralPost from "./components/Posts/GeneralPost/GeneralPost"
 
 function App() {
   return (
@@ -39,6 +42,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/generalpost"
+            element={
+              <ProtectedRoute>
+                <CreateGeneralPost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit/generalpost"
+            element={
+              <ProtectedRoute>
+                <EditGeneralPost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/post/generalpost/:post_id"
+            element={
+              <ProtectedRoute>
+                <GeneralPost />
               </ProtectedRoute>
             }
           />

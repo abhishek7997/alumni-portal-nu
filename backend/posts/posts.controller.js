@@ -8,6 +8,9 @@ const {
   addPostComment,
   getAllPostComments,
   getPostCommentsOfPostById,
+  deleteGeneralPost,
+  updateGeneralPost,
+  getGeneralPostDetails,
 } = require("./posts.service")
 const { isAuthenticatedUser } = require("../middleware/auth")
 const express = require("express")
@@ -23,7 +26,16 @@ router
   .route("/posts/general_posts/create")
   .post(isAuthenticatedUser, createGeneralPost)
 router.route("/posts/general_posts").get(getAllGeneralPosts)
-router.route("/posts/general_posts/:user_id").get(getGeneralPostsByUserId)
+router.route("/posts/general_posts/user/:user_id").get(getGeneralPostsByUserId)
+router
+  .route("/posts/general_posts/:post_id")
+  .get(isAuthenticatedUser, getGeneralPostDetails)
+router
+  .route("/posts/general_posts/:post_id")
+  .delete(isAuthenticatedUser, deleteGeneralPost)
+router
+  .route("/posts/general_posts/:post_id")
+  .patch(isAuthenticatedUser, updateGeneralPost)
 
 router
   .route("/posts/post_comments/create")

@@ -21,7 +21,16 @@ exports.isAuthenticatedUser = async (req, res, next) => {
     .request()
     .query(`SELECT usr_id FROM users WHERE usr_id = '${decodedData.user_id}'`)
 
-  // console.log("user: ", user.recordset[0])
+  if (!user) {
+    return next(
+      res.status(401).json({
+        success: false,
+        message: "Please login to access this resource",
+      })
+    )
+  }
+
+  console.log("user: ", JSON.stringify(user.recordset[0]))
   req.user = user.recordset[0]
   next()
 }

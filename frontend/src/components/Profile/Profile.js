@@ -24,14 +24,19 @@ export default function Profile() {
   return loading ? (
     <CircularProgressIndicator />
   ) : profileInfo ? (
-    <section style={{ backgroundColor: "rgb(230, 213, 210)" }}>
+    <section
+      style={{ backgroundColor: "rgb(230, 213, 210)", minHeight: "85vh" }}
+    >
       <Container className="py-5">
         <div className={s.row}>
           <div className={s.col}>
             <Card className="mb-4">
               <CardContent className="text-center">
                 <CardMedia
-                  image="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                  image={
+                    profileInfo.user_image ??
+                    "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                  }
                   alt="avatar"
                   className={s.rounded_circle}
                   style={{ width: "150px" }}
@@ -80,40 +85,6 @@ export default function Profile() {
                     More
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent>
-                <List>
-                  <ListItem>
-                    <a
-                      href="https://jaswant-kondur.netlify.app/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <ListItemText>
-                        https://jaswant-kondur.netlify.app/
-                      </ListItemText>
-                    </a>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText>voodoo-exe</ListItemText>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText>@iJaswant1</ListItemText>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText>niituniv</ListItemText>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText>niituniv</ListItemText>
-                  </ListItem>
-                </List>
               </CardContent>
             </Card>
           </div>

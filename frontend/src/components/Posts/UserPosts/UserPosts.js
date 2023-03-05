@@ -1,14 +1,27 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchPosts } from "../../../features/userPosts/userPostsActions"
+import {
+  fetchPosts,
+  deleteGeneralPost,
+} from "../../../features/userPosts/userPostsActions"
 import { Box, Paper, Container, Typography } from "@mui/material"
 import s from "./UserPosts.module.css"
 import CircularProgressIndicator from "../../CircularProgressIndicator/CircularProgressIndicator"
+import { IconButton } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add"
+import EditIcon from "@mui/icons-material/Edit"
+import DeleteIcon from "@mui/icons-material/Delete"
+import LaunchIcon from "@mui/icons-material/Launch"
+import { Link, useNavigate } from "react-router-dom"
+import { useGetCurrentUserDetailsQuery } from "../../../api/connectionsSlice"
 
 const UserPosts = () => {
   let { loading, userPosts, error, success } = useSelector(
     (state) => state.userPosts
   )
+
+  const { data, isLoading, error: currError } = useGetCurrentUserDetailsQuery()
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -17,10 +30,10 @@ const UserPosts = () => {
 
   return (
     <Container maxWidth="lg">
-      {loading ? (
+      {loading || isLoading ? (
         <CircularProgressIndicator />
       ) : error ? (
-        <p>Error occured</p>
+        <p>Error occured: {`${error} OR ${currError}`}</p>
       ) : (
         <Box
           sx={{
@@ -45,11 +58,10 @@ const UserPosts = () => {
             </Typography>
           </Paper>
           {userPosts &&
-            userPosts.data &&
-            userPosts.data.map((item) => {
+            userPosts.map((item) => {
               return (
                 <Paper
-                  key={Number(userPosts.data.post_id)}
+                  key={parseInt(item.post_id)}
                   elevation={3}
                   sx={{
                     width: "100%",
@@ -57,17 +69,21 @@ const UserPosts = () => {
                     marginBottom: "1.5rem",
                   }}
                 >
-                  <UserPost data={item}></UserPost>
+                  <UserPost
+                    usr_id={parseInt(data.data.usr_id)}
+                    data={item}
+                  ></UserPost>
                 </Paper>
               )
             })}
         </Box>
       )}
+      <CreatePostButton />
     </Container>
   )
 }
 
-export const UserPost = ({ data }) => {
+export const UserPost = ({ usr_id, data }) => {
   /*
     {
         "full_name": "M Abhishek",
@@ -78,24 +94,83 @@ export const UserPost = ({ data }) => {
         "created_at": "2022-11-28T19:47:52.187Z"
     }
     */
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const clickDelete = (post_id) => {
+    const pid = parseInt(post_id, 10)
+    dispatch(deleteGeneralPost(pid))
+  }
+
+  const clickEdit = (post_id, content) => {
+    const pid = parseInt(post_id, 10)
+    navigate("/edit/generalpost", { state: { post_id: pid, content: content } })
+  }
+
   const created_at = new Date(data.created_at).toDateString()
   return (
     <div className={s.post_container}>
       <div className={s.post_name}>
         <div>
-          <Typography variant="h5">{data.full_name}</Typography>
+          <Typography variant="h5">{`${data.first_name} ${data.last_name}`}</Typography>
         </div>
       </div>
-      <div className={s.post_content}>
-        <div>
-          <Typography variant="body1">{data.content}</Typography>
+      <div>
+        <div className={s.post_content}>
+          <div>
+            <Typography variant="body1" style={{ whiteSpace: "pre-wrap" }}>
+              {data.content}
+            </Typography>
+          </div>
+        </div>
+        <div className={`${s.post_date} ${s.parent}`}>
+          <div className={s.left}>
+            <div>
+              <Typography variant="body2">Created at : {created_at}</Typography>
+            </div>
+          </div>
+          <div className={s.right}>
+            {usr_id === parseInt(data.gp_user_id, 10) ? (
+              <IconButton
+                className={s.button}
+                aria-label="menu"
+                onClick={() => clickEdit(data.post_id, data.content)}
+              >
+                <EditIcon className={s.left_icon} />
+              </IconButton>
+            ) : null}
+            {usr_id === parseInt(data.gp_user_id, 10) ? (
+              <IconButton
+                className={s.button}
+                aria-label="menu"
+                onClick={() => clickDelete(data.post_id)}
+              >
+                <DeleteIcon className={s.left_icon} />
+              </IconButton>
+            ) : null}
+            <Link reloadDocument to={`/post/generalpost/${data.post_id}`}>
+              <IconButton className={s.button} aria-label="menu">
+                <LaunchIcon className={s.left_icon} />
+              </IconButton>
+            </Link>
+          </div>
         </div>
       </div>
-      <div className={s.post_date}>
-        <div>
-          <Typography variant="body2">Created at : {created_at}</Typography>
-        </div>
-      </div>
+    </div>
+  )
+}
+
+const CreatePostButton = () => {
+  const navigate = useNavigate()
+  const handleClick = () => {
+    navigate("/create/generalpost")
+  }
+
+  return (
+    <div className={s.create_post_button}>
+      <IconButton size="large" onClick={handleClick} variant="contained">
+        <AddIcon />
+      </IconButton>
     </div>
   )
 }

@@ -46,7 +46,6 @@ const Home = () => {
         <div className={s.text}>
           <p>{text}</p>
         </div>
-        {/* <Testimonials className={s.testimonials}></Testimonials> */}
       </div>
     </>
   )

@@ -1,0 +1,22 @@
+.title_text {
+  background-color: #fefefe;
+  text-align: center;
+  margin: 1.2rem auto;
+}
+
+.form {
+  width: 100%;
+  margin-top: 3rem;
+}
+
+.textfield {
+  width: 100%;
+  margin: 2rem auto;
+}
+
+.button {
+  width: 100%;
+  font-size: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}

@@ -66,6 +66,7 @@ export const loginUser = createAsyncThunk(
         userData,
         config
       )
+      console.log(response.data)
       return response.data
     } catch (error) {
       // return custom error message from API if any
@@ -82,7 +83,6 @@ export const logoutUser = createAsyncThunk(
   "user/logout",
   async (_, { rejectWithValue }) => {
     try {
-      // make request to backend
       const response = await axios.post("/api/v1/users/alumnus/logout")
       return response.data
     } catch (error) {

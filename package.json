@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Voodoo-exe/alumni-portal-nu.git"
+    "url": "git+https://github.com/abhishek7997/alumni-portal-nu.git"
   },
   "author": "Team 3 - M.Abhishek, Avi Sinha, Jaswant Kondur, Ayush Jha, Aditya Choudhari",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Voodoo-exe/alumni-portal-nu/issues"
+    "url": "https://github.com/abhishek7997/alumni-portal-nu/issues"
   },
-  "homepage": "https://github.com/Voodoo-exe/alumni-portal-nu#readme",
+  "homepage": "https://github.com/abhishek7997/alumni-portal-nu.git#readme",
   "dependencies": {
     "concurrently": "^7.4.0",
     "cookie-parser": "^1.4.6",
