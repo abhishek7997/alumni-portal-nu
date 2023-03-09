@@ -1,14 +1,6 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
 .nav {
   z-index: 128;
-  background-color: #813619;
+  background-color: #d83616;
   color: #fff;
   display: flex;
   flex-direction: row;
@@ -39,26 +31,26 @@ body {
 .nav ul li:hover {
   background-color: white;
   align-items: center;
-  color: #813619;
+  color: #d83616;
 }
 
 .nav ul li.active {
   background-color: white;
-  color: #813619;
+  color: #d83616;
 }
 
 .nav .site_title {
-  font-size: 2rem;
+  font-size: 1.6rem;
   margin-left: 2rem;
 }
 
 .nav .site_title:hover {
   background-color: white;
-  color: #813619;
+  color: #d83616;
 }
 
 .nav .logo {
-  height: 150px;
+  height: 100px;
 }
 
 .left_container {
@@ -73,7 +65,7 @@ body {
 
 @media only screen and (max-width: 612px) {
   .nav {
-    background-color: lightblue;
+    background-color: #a42a11;
     flex-direction: column;
     padding: 0;
   }

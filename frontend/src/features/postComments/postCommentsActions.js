@@ -21,7 +21,6 @@ export const addPostComment = createAsyncThunk(
   "postComments/addPostComment",
   async (data, { rejectWithValue }) => {
     try {
-      console.log(JSON.stringify(data))
       const response = await axios.post(
         "/api/v1/posts/post_comments/create",
         data

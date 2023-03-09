@@ -8,6 +8,25 @@
   padding: 1rem 2rem;
 } */
 
+.post_user {
+  border-bottom: 2px solid rgb(202, 202, 202);
+}
+
+.post_user > div {
+  padding: 1rem 2rem;
+}
+
+.user_image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid#CCCCCC;
+}
+
+.user_name {
+  display: inline;
+}
+
 .post_name {
   border-bottom: 2px solid rgb(202, 202, 202);
 }

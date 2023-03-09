@@ -1,66 +1,78 @@
-import React from "react"
+import React, { useState, useEffect, useLayoutEffect } from "react"
 import { Link } from "react-router-dom"
 import { useSelector } from "react-redux"
 import s from "./NewNavbar.module.css"
+import { useGetCurrentUserDetailsQuery } from "../../api/connectionsSlice"
 
 export default function NewNavbar() {
-  const { loading, userInfo, error, success } = useSelector(
-    (state) => state.user
-  )
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { data = null, error, isLoading } = useGetCurrentUserDetailsQuery()
 
-  const {
-    loading: profileLoading,
-    profileInfo,
-    error: profileError,
-    success: profileSuccess,
-  } = useSelector((state) => state.profile)
+  useLayoutEffect(() => {
+    if (data) setIsLoggedIn(true)
+    else setIsLoggedIn(false)
+  }, [data, isLoading])
 
   return (
     <nav className={s.nav}>
       <div className={s.left_container}>
         <img src="/images/download.png" className={s.logo} />
-        <Link to="/" className={s.site_title}>
-          NIIT UNIVERSITY
+        <Link reloadDocument to="/" className={s.site_title}>
+          ALUMNI PORTAL
         </Link>
       </div>
-      <div className={s.right_container}>
-        <ul>
-          {userInfo && (
-            <li>
-              <Link reloadDocument to="/home">
-                Home
-              </Link>
-            </li>
-          )}
-          {userInfo && (
-            <li>
-              <Link reloadDocument to="/connect" name="connect_link">
-                Connect
-              </Link>
-            </li>
-          )}
-          {profileInfo && (
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-          )}
-          {!userInfo && (
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
-          )}
-          {!userInfo && (
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-          )}
-          {userInfo && (
-            <li>
-              <Link to="/logout">Logout</Link>
-            </li>
-          )}
-        </ul>
-      </div>
+      {!isLoading ? (
+        <div className={s.right_container}>
+          <ul>
+            {isLoggedIn ? (
+              <li>
+                <Link reloadDocument to="/home">
+                  Home
+                </Link>
+              </li>
+            ) : null}
+            {isLoggedIn ? (
+              <li>
+                <Link reloadDocument to="/connect" name="connect_link">
+                  Connect
+                </Link>
+              </li>
+            ) : null}
+            {isLoggedIn ? (
+              <li>
+                <Link reloadDocument to={`/profile/user/${data.data.usr_id}`}>
+                  Profile
+                </Link>
+              </li>
+            ) : null}
+            {!isLoggedIn ? (
+              <li>
+                <Link reloadDocument to="/register">
+                  Register
+                </Link>
+              </li>
+            ) : null}
+            {!isLoggedIn ? (
+              <li>
+                <Link reloadDocument to="/login">
+                  Login
+                </Link>
+              </li>
+            ) : null}
+            {isLoggedIn ? (
+              <li>
+                <Link
+                  reloadDocument
+                  to="/logout"
+                  onClick={() => setIsLoggedIn(false)}
+                >
+                  Logout
+                </Link>
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      ) : null}
     </nav>
   )
 }

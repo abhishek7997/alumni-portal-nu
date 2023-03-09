@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Button, Box, TextField, Container, Typography } from "@mui/material"
+import {
+  Button,
+  Box,
+  TextField,
+  Container,
+  Typography,
+  Paper,
+} from "@mui/material"
 import s from "./CreatePost.module.css"
 import { useCreatePostMutation } from "../../../api/connectionsSlice"
 import { useNavigate } from "react-router-dom"
@@ -22,9 +29,19 @@ const CreateGeneralPost = () => {
   return (
     <div>
       <Container>
-        <Typography component="div" className={s.title_text} variant="h3">
-          Create post
-        </Typography>
+        <Paper
+          elevation={3}
+          sx={{
+            width: "100%",
+            margin: "1.2rem auto",
+            paddingTop: "1.2rem",
+            paddingBottom: "1.2rem",
+          }}
+        >
+          <Typography component="div" className={s.title_text} variant="h3">
+            Create post
+          </Typography>
+        </Paper>
         <form className={s.form} onSubmit={handleSubmit}>
           <div className={s.textfield}>
             <TextField

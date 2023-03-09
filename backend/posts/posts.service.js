@@ -120,7 +120,7 @@ const getAllGeneralPosts = async (req, res) => {
           model: db.UserPost,
           include: {
             model: db.User,
-            attributes: ["first_name", "last_name"],
+            attributes: ["first_name", "last_name", "user_image"],
           },
         },
       ],
@@ -137,6 +137,7 @@ const getAllGeneralPosts = async (req, res) => {
         created_at: post.created_at,
         first_name: post["UserPost.User.first_name"],
         last_name: post["UserPost.User.last_name"],
+        user_image: post["UserPost.User.user_image"],
       }
     })
 
@@ -159,12 +160,31 @@ const getGeneralPostsByUserId = async (req, res) => {
 
     const general_posts = await db.GeneralPost.findAll({
       where: { gp_user_id: gp_user_id },
-      // include: [
-      //   {
-      //     model: db.UserPost,
-      //     include: { model: db.User, where: { usr_id: gp_user_id } },
-      //   },
-      // ],
+      attributes: [
+        "post_id",
+        "gp_user_id",
+        "content",
+        "media",
+        "created_at",
+        "UserPost.User.user_image",
+        "UserPost.User.first_name",
+        "UserPost.User.last_name",
+      ],
+      include: [
+        {
+          model: db.UserPost,
+          attributes: [],
+          include: {
+            model: db.User,
+            attributes: [],
+            where: {
+              usr_id: gp_user_id,
+            },
+          },
+        },
+      ],
+      order: [["created_at", "DESC"]],
+      raw: true,
     })
 
     res.status(201).json({
@@ -191,9 +211,23 @@ const addPostComment = async (req, res) => {
       content,
     })
 
+    const results = await db.PostComment.findOne({
+      where: {
+        post_comment_id: result.post_comment_id,
+      },
+      include: {
+        model: db.User,
+        where: {
+          usr_id: { [Op.eq]: Sequelize.col("PostComment.pc_user_id") },
+        },
+        attributes: ["first_name", "last_name"],
+      },
+      order: [["created_at", "DESC"]],
+    })
+
     res.status(201).json({
       success: true,
-      data: result.toJSON(),
+      data: results.toJSON(),
     })
   } catch (err) {
     res.status(500).json({
@@ -245,7 +279,7 @@ const getPostCommentsOfPostById = async (req, res) => {
         where: {
           usr_id: { [Op.eq]: Sequelize.col("PostComment.pc_user_id") },
         },
-        attributes: [],
+        attributes: ["first_name", "last_name"],
       },
       order: [["created_at", "DESC"]],
     })

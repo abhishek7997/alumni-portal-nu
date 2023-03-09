@@ -61,15 +61,20 @@ function Register() {
   const { loading, userInfo, error, success } = useSelector(
     (state) => state.user
   )
+
+  const { profileInfo, error: profileError } = useSelector(
+    (state) => state.profile
+  )
+
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (userInfo) {
       dispatch(getLoggedInUserDetails())
-      navigate("/profile")
+      if (profileInfo) navigate(`/profile/user/${profileInfo.usr_id}`)
     }
-  }, [navigate, userInfo, success])
+  }, [navigate, userInfo, profileInfo, success])
 
   const classes = useStyles()
 

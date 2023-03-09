@@ -1,5 +1,4 @@
 import React from "react"
-import Testimonials from "../Testimonials/Testimonials"
 import s from "./Home.module.css"
 
 const text = `At NIIT University (NU), our endeavour is to create a vibrant
@@ -38,16 +37,21 @@ const text = `At NIIT University (NU), our endeavour is to create a vibrant
 
 const Home = () => {
   return (
-    <>
-      <div className={s.top}>
-        <img src="images/alumni.jpg" width="100%" />
-      </div>
+    <section className={s.home_section}>
       <div>
         <div className={s.text}>
-          <p>{text}</p>
+          <p>Alumni Portal</p>
+        </div>
+        <div className={s.small_text}>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+            Laboriosam, illum sed commodi nemo vel, aspernatur, reiciendis nisi
+            ratione deserunt quod laborum maiores! Doloribus ipsam, libero
+            voluptatum sapiente numquam placeat dolorem!
+          </p>
         </div>
       </div>
-    </>
+    </section>
   )
 }
 

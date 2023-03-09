@@ -2,15 +2,16 @@ import React from "react"
 import { Navigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import CircularProgressIndicator from "../components/CircularProgressIndicator/CircularProgressIndicator"
+import { useGetCurrentUserDetailsQuery } from "../api/connectionsSlice"
 
 const ProtectedRoute = ({ children }) => {
-  const { loading, userInfo } = useSelector((state) => state.user)
+  const { data, error, isLoading } = useGetCurrentUserDetailsQuery()
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <CircularProgressIndicator />
-      ) : !userInfo ? (
+      ) : data === undefined || data === null ? (
         <Navigate to="/login" replace />
       ) : (
         children

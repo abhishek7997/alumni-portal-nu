@@ -10,6 +10,7 @@ import {
 import { useGetOthersQuery } from "../../api/connectionsSlice"
 import CircularProgressIndicator from "../CircularProgressIndicator/CircularProgressIndicator"
 import s from "./ConnectPage.module.css"
+import { Link } from "react-router-dom"
 
 function ConnectPage() {
   const [inputText, setInputText] = useState("")
@@ -46,6 +47,7 @@ function ConnectPage() {
           fullWidth
           label="Search"
           name="connect_search"
+          sx={{ backgroundColor: "white" }}
         />
       </div>
       <Grid
@@ -77,6 +79,7 @@ function UsersList({ data, input }) {
       {filteredData.map((item) => (
         <Grid item key={parseInt(item.usr_id)}>
           <ConnectCard
+            user_id={item.usr_id}
             batch={item.GeneralUser.batch}
             name={`${item.first_name} ${item.last_name}`}
             photo={item.user_image}
@@ -87,14 +90,16 @@ function UsersList({ data, input }) {
   )
 }
 
-function ConnectCard({ batch, name, photo }) {
+function ConnectCard({ user_id, batch, name, photo }) {
   const pic = photo ?? "logo512.png"
 
   return (
     <Card className={s.main_card}>
-      <div>
-        <img src={pic} className={s.card_image}></img>
-      </div>
+      <Link to={`/profile/user/${user_id}`}>
+        <div>
+          <img src={pic} className={s.card_image} alt="Profile"></img>
+        </div>
+      </Link>
 
       <div className={s.card_body}>
         <Typography className={s.text}>{name}</Typography>

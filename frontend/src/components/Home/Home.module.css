@@ -1,16 +1,44 @@
-.text {
-  text-align: justify;
-  background-color: #831619;
-  color: #fff;
-  font-size: medium;
-  max-height: 70vh;
-  overflow-y: auto;
-  margin-bottom: 8rem;
+.home_section {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.1)
+    ),
+    url(../../../public/images/background.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.text p {
-  padding: 6rem 12rem;
-  font-size: 1.5rem;
+.home_section > div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10vw;
+}
+
+.text {
+  text-align: justify;
+  font-size: medium;
+  color: white;
+}
+
+.text > p {
+  font-size: 6vw;
+}
+
+.small_text {
+  color: white;
+  width: 70vw;
+}
+
+.small_text > p {
+  font-size: 1.6rem;
 }
 
 .top {
@@ -18,14 +46,5 @@
   background-color: powderblue;
 }
 
-.testimonials {
-  margin-top: 4rem;
-  margin-bottom: 4rem;
-}
-
 @media only screen and (max-width: 941px) {
-  .text p {
-    padding: 2rem 4rem;
-    font-size: 1.2rem;
-  }
 }

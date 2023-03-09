@@ -109,6 +109,13 @@ export const UserPost = ({ usr_id, data }) => {
           <div>
             <Typography variant="h5">{`${data.first_name} ${data.last_name}`}</Typography>
           </div>
+          {/* <div className={s.user_container}>
+            <img src={data.user_image} className={s.user_image} />
+            <Typography
+              variant="h5"
+              className={s.user_name}
+            >{`${data.first_name} ${data.last_name}`}</Typography>
+          </div> */}
         </div>
         <div>
           <div className={s.post_content}>
@@ -216,6 +223,13 @@ const PostComments = (post_id) => {
                 }}
               >
                 <div>
+                  <div className={s.post_container}>
+                    <div className={s.post_user}>
+                      <div>
+                        <Typography variant="body2">{`${comment.User.first_name} ${comment.User.last_name}`}</Typography>
+                      </div>
+                    </div>
+                  </div>
                   <div className={s.post_container}>
                     <div className={s.post_name}>
                       <div>{comment.content}</div>

@@ -58,7 +58,7 @@ const registerAlumnus = async (req, res) => {
         email_address,
         mobile_number,
         pass_hash,
-        user_image: `https://picsum.photos/seed/${seed}/200/300`,
+        user_image: `https://picsum.photos/seed/${seed}/200/`,
       },
       {
         fields: [
@@ -276,7 +276,7 @@ const getAlumnusById = async (req, res) => {
     }
 
     const [users, metadata] = await db.sequelize.query(
-      `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
+      `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_resume, user_image FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
     )
 
     if (users === null || users.length === 0) {
@@ -302,15 +302,22 @@ const getAlumnusById = async (req, res) => {
 const getCurrentAlumnusDetails = async (req, res) => {
   try {
     const user_id = req.user.usr_id
+
+    if (isNaN(user_id)) {
+      res.status(404).json({
+        success: false,
+        data: null,
+      })
+      return
+    }
+
     const [users, metadata] = await db.sequelize.query(
       `SELECT usr_id, first_name, last_name, email_address, mobile_number, pass_hash, batch, user_bio, user_company, user_location, user_job, user_image, user_resume FROM users U, general_users GU WHERE U.usr_id = GU.gu_user_id AND GU.gu_user_id = ${user_id};`
     )
-    console.log("METADATA: ", metadata)
-    console.log("USERS: ", users)
 
     if (metadata === 0) {
       res.status(404).json({
-        success: true,
+        success: false,
         data: null,
       })
       return

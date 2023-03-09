@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useLayoutEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { clearState } from "../../features/profile/profileSlice"
@@ -11,7 +11,7 @@ const Logout = () => {
     (state) => state.user
   )
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(clearState())
     dispatch(logoutUser())
     if (success) {

@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const sql = require("mssql")
 const config = require("../config/config")
+const db = require("../utils/orm")
 
 exports.isAuthenticatedUser = async (req, res, next) => {
   const { accessToken } = req.cookies
@@ -14,13 +15,13 @@ exports.isAuthenticatedUser = async (req, res, next) => {
   }
 
   const decodedData = jwt.verify(accessToken, process.env.JWT_SECRET)
-  // console.log("decoded data : ", decodedData)
 
-  let pool = await sql.connect(config)
-  const user = await pool
-    .request()
-    .query(`SELECT usr_id FROM users WHERE usr_id = '${decodedData.user_id}'`)
-
+  const user = await db.User.findOne({
+    where: {
+      usr_id: decodedData.user_id,
+    },
+    attributes: ["usr_id"],
+  })
   if (!user) {
     return next(
       res.status(401).json({
@@ -30,7 +31,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
     )
   }
 
-  console.log("user: ", JSON.stringify(user.recordset[0]))
-  req.user = user.recordset[0]
+  console.log("user: ", JSON.stringify(user))
+  req.user = user
   next()
 }

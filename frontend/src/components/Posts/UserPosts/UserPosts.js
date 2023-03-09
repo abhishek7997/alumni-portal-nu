@@ -111,8 +111,15 @@ export const UserPost = ({ usr_id, data }) => {
   return (
     <div className={s.post_container}>
       <div className={s.post_name}>
-        <div>
-          <Typography variant="h5">{`${data.first_name} ${data.last_name}`}</Typography>
+        <div className={s.user_container}>
+          <Link to={`/profile/${data.gp_user_id}`} className={s.link}>
+            <img src={data.user_image} className={s.user_image} />
+          </Link>
+          <Link to={`/profile/${data.gp_user_id}`} className={s.link}>
+            <Typography variant="h5" className={s.user_name}>
+              {`${data.first_name} ${data.last_name}`}
+            </Typography>
+          </Link>
         </div>
       </div>
       <div>

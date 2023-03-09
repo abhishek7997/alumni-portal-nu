@@ -31,6 +31,12 @@ export const connectionsSlice = createApi({
     getPostCommentsByPostId: builder.query({
       query: (post_id) => `posts/post_comments/${post_id}`,
     }),
+    getUserByUserId: builder.query({
+      query: (user_id) => `/users/alumnus/${user_id}`,
+    }),
+    getPostsByUserId: builder.query({
+      query: (user_id) => `/posts/general_posts/user/${user_id}`,
+    }),
   }),
 })
 
@@ -40,4 +46,6 @@ export const {
   useCreatePostMutation,
   useGetPostByPostIdQuery,
   useGetPostCommentsByPostIdQuery,
+  useGetUserByUserIdQuery,
+  useGetPostsByUserIdQuery,
 } = connectionsSlice

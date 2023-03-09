@@ -11,78 +11,116 @@ import UserPosts from "./components/Posts/UserPosts/UserPosts"
 import CreateGeneralPost from "./components/Posts/CreatePost/CreatePost"
 import EditGeneralPost from "./components/Posts/EditPost/EditPost"
 import GeneralPost from "./components/Posts/GeneralPost/GeneralPost"
+import { ThemeProvider, createTheme } from "@mui/material"
+import theme from "./utils/themes"
+
+const th = createTheme(theme)
 
 function App() {
   return (
-    <div>
-      <Router>
-        <NewNavbar></NewNavbar>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/home"
-            exact
-            element={
-              <ProtectedRoute>
+    <Router>
+      <NewNavbar></NewNavbar>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/home"
+          exact
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
                 <UserPosts />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/connect"
-            exact
-            element={
-              <ProtectedRoute>
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/connect"
+          exact
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
                 <ConnectPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
                 <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/create/generalpost"
-            element={
-              <ProtectedRoute>
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/user/:user_id"
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
+                <Profile />
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create/generalpost"
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
                 <CreateGeneralPost />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit/generalpost"
-            element={
-              <ProtectedRoute>
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit/generalpost"
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
                 <EditGeneralPost />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/post/generalpost/:post_id"
-            element={
-              <ProtectedRoute>
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/post/generalpost/:post_id"
+          element={
+            <ProtectedRoute>
+              <ThemeProvider theme={th}>
                 <GeneralPost />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/logout"
-            element={
-              <ProtectedRoute>
-                <Logout />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </Router>
-    </div>
+              </ThemeProvider>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <ThemeProvider theme={th}>
+              <Register />
+            </ThemeProvider>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <ThemeProvider theme={th}>
+              <Login />
+            </ThemeProvider>
+          }
+        />
+        <Route
+          path="/logout"
+          element={
+            <ProtectedRoute>
+              <Logout />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </Router>
   )
 }
 

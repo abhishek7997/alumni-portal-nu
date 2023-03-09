@@ -35,8 +35,8 @@
 
 .create_post_button {
   position: fixed;
-  right: 10px;
-  bottom: 10px;
+  right: 20px;
+  bottom: 15px;
 }
 
 .create_post_button > button {
@@ -79,4 +79,33 @@ button {
 
 .right_icon {
   margin-left: 1px;
+}
+
+.user_container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.user_container > img {
+  margin-right: 1rem;
+}
+
+.user_image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid#CCCCCC;
+}
+
+.user_name {
+  display: inline;
+  margin-left: 1.2rem;
+}
+
+.link,
+.link:hover,
+.link:active {
+  text-decoration: none;
+  color: inherit;
 }

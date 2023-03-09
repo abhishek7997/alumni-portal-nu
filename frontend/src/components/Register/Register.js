@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { makeStyles } from "@material-ui/core/styles"
 import ReactPhoneInput from "react-phone-input-material-ui"
-import { TextField, withStyles } from "@material-ui/core"
-import PhotoCamera from "@mui/icons-material/PhotoCamera"
+import { TextField } from "@material-ui/core"
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import {
   Paper,
@@ -21,25 +19,6 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { getLoggedInUserDetails } from "../../features/profile/profileActions"
 import s from "./Register.module.css"
-
-const styles = (theme) => ({
-  field: {
-    margin: "10px 0",
-  },
-  countryList: {
-    ...theme.typography.body1,
-  },
-})
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "100%",
-      height: "100%",
-    },
-  },
-}))
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required("First name is required"),
@@ -94,7 +73,6 @@ function Register() {
   }, [navigate, userInfo, success])
 
   const [mobile_number, setmobile_number] = useState("")
-  const classes = useStyles()
 
   const [passwordState, setPasswordState] = React.useState({
     password: "",
@@ -344,4 +322,4 @@ function Register() {
   )
 }
 
-export default withStyles(styles)(Register)
+export default Register
