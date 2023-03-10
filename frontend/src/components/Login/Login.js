@@ -20,25 +20,6 @@ import {
 } from "@mui/material"
 import s from "./Login.module.css"
 
-const styles = (theme) => ({
-  field: {
-    margin: "10px 0",
-  },
-  countryList: {
-    ...theme.typography.body1,
-  },
-})
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "100%",
-      height: "100%",
-    },
-  },
-}))
-
 const validationSchema = yup.object().shape({
   email_address: yup
     .string()
@@ -47,7 +28,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 })
 
-function Register() {
+function Login() {
   const {
     register,
     control,
@@ -76,8 +57,6 @@ function Register() {
     }
   }, [navigate, userInfo, profileInfo, success])
 
-  const classes = useStyles()
-
   const [passwordState, setPasswordState] = React.useState({
     password: "",
     showPassword: false,
@@ -96,7 +75,6 @@ function Register() {
 
   const onSubmit = (data) => {
     data.email_address = data.email_address.toLowerCase()
-    console.log(JSON.stringify(data, null, 2))
     dispatch(loginUser(data))
   }
 
@@ -188,4 +166,4 @@ function Register() {
   )
 }
 
-export default withStyles(styles)(Register)
+export default Login

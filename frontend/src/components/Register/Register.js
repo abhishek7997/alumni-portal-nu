@@ -65,7 +65,6 @@ function Register() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // redirect authenticated user to profile screen
     dispatch(getLoggedInUserDetails())
     if (userInfo) {
       navigate("/profile")
@@ -81,7 +80,6 @@ function Register() {
   })
 
   const handlePhoneChange = (data) => {
-    // console.log(data)
     setmobile_number(data)
     setValue("mobile_number", data)
   }
@@ -99,23 +97,7 @@ function Register() {
 
   const onSubmit = (data) => {
     data.email_address = data.email_address.toLowerCase()
-    /*
-    {
-      "user_job": "SDE Intern",
-      "user_location": "Bangalore",
-      "user_company": "Big Basket",
-      "batch": 2019,
-      "user_bio": "I work at Big Basket",
-      "mobile_number": "919817293847",
-      "confirmPassword": "avisinha",
-      "password": "avisinha",
-      "email_address": "avi@gmail.com",
-      "last_name": "sinha",
-      "first_name": "avi"
-    }
-    */
     delete data.confirmPassword
-    console.log(JSON.stringify(data, null, 2))
     dispatch(registerUser(data))
   }
 
